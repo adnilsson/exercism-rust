@@ -30,6 +30,11 @@ pub fn value_to_color_string(value: u32) -> String {
     }
 }
 
-pub fn colors() -> Vec<ResistorColor> {
+/// Gather an enum iterator into a vector
+fn enum_vec<T: Sequence>() -> Vec<T> {
     all::<_>().collect::<Vec<_>>()
+}
+
+pub fn colors() -> Vec<ResistorColor> {
+    enum_vec::<ResistorColor>()
 }

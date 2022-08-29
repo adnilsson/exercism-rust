@@ -16,8 +16,8 @@ pub enum ResistorColor {
     White = 9,
 }
 
-pub fn color_to_value(_color: ResistorColor) -> u32 {
-    _color.int_value()
+pub fn color_to_value(color: ResistorColor) -> u32 {
+    color.int_value()
 }
 
 // I'd argue that this function should return a Result<String> instead
@@ -30,11 +30,6 @@ pub fn value_to_color_string(value: u32) -> String {
     }
 }
 
-/// Gather an enum iterator into a vector
-fn enum_vec<T: Sequence>() -> Vec<T> {
-    all::<_>().collect::<Vec<_>>()
-}
-
 pub fn colors() -> Vec<ResistorColor> {
-    enum_vec::<ResistorColor>()
+    all().collect()
 }

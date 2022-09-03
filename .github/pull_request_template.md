@@ -1,6 +1,6 @@
 # Description
 
-Solution(s) to the ()[] exercise.
+Solution(s) to the []() exercise.
 
 ## Mentoring
 

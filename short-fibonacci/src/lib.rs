@@ -1,0 +1,39 @@
+/// Create an empty vector
+pub fn create_empty() -> Vec<u8> {
+    vec![]
+}
+
+/// Create a buffer of `count` zeroes.
+///
+/// Applications often use buffers when serializing data to send over the network.
+pub fn create_buffer(count: usize) -> Vec<u8> {
+    vec![0; count]
+}
+
+/// Create a vector containing the first five elements of the Fibonacci sequence.
+///
+/// Fibonacci's sequence is the list of numbers where the next number is a sum of the previous two.
+/// Its first five elements are `1, 1, 2, 3, 5`.
+pub fn fibonacci() -> Vec<u8> {
+    _fibonacci(5).unwrap()
+}
+
+fn _fibonacci(count: usize) -> Result<Vec<u8>, String> {
+    match count {
+        0 => Ok(vec![]),
+        1 => Ok(vec![1]),
+        2 => Ok(vec![1; 2]),
+        n => {
+            let mut buf: Vec<u8> = vec![1; n];
+
+            for i in 2..n {
+                if let Some(ith_fib) = buf[i - 2].checked_add(buf[i - 1]) {
+                    buf[i] = ith_fib;
+                } else {
+                    return Err(format!("The {}:th fibonacci number can't fit into a u8", i));
+                }
+            }
+            Ok(buf)
+        }
+    }
+}

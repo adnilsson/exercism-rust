@@ -15,22 +15,25 @@ pub fn create_buffer(count: usize) -> Vec<u8> {
 /// Fibonacci's sequence is the list of numbers where the next number is a sum of the previous two.
 /// Its first five elements are `1, 1, 2, 3, 5`.
 pub fn fibonacci() -> Vec<u8> {
-    let fib: Result<Vec<u8>, String> = (1..=5).map(_fibonacci).collect();
-    fib.unwrap()
+    _fibonacci(5).unwrap()
 }
 
-fn _fibonacci(count: usize) -> Result<u8, String> {
+fn _fibonacci(count: usize) -> Result<Vec<u8>, String> {
     match count {
-        0 => Ok(0),
-        1 | 2 => Ok(1),
+        0 => Ok(vec![]),
+        1 => Ok(vec![1]),
+        2 => Ok(vec![1; 2]),
         n => {
-            let fib1 = _fibonacci(n - 2).unwrap();
-            let fib2 = _fibonacci(n - 1).unwrap();
+            let mut buf: Vec<u8> = vec![1; n];
 
-            match fib1.checked_add(fib2) {
-                Some(checked_add) => Ok(checked_add),
-                None => Err(format!("The {}:th fibonacci number can't fit into a u8", n)),
+            for i in 2..n {
+                if let Some(ith_fib) = buf[i - 2].checked_add(buf[i - 1]) {
+                    buf[i] = ith_fib;
+                } else {
+                    return Err(format!("The {}:th fibonacci number can't fit into a u8", i));
+                }
             }
+            Ok(buf)
         }
     }
 }

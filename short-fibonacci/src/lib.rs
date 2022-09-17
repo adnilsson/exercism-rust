@@ -22,6 +22,8 @@ fn _fibonacci(count: usize) -> u8 {
     match count {
         0 => 0,
         1 | 2 => 1,
-        n => _fibonacci(n - 2) + _fibonacci(n - 1),
+        n => _fibonacci(n - 2)
+            .checked_add(_fibonacci(n - 1))
+            .expect(format!("The {}:th fibonacci number can't fit into a u8", n).as_str()),
     }
 }

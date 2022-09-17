@@ -15,14 +15,13 @@ pub fn create_buffer(count: usize) -> Vec<u8> {
 /// Fibonacci's sequence is the list of numbers where the next number is a sum of the previous two.
 /// Its first five elements are `1, 1, 2, 3, 5`.
 pub fn fibonacci() -> Vec<u8> {
-    let fib: Option<Vec<u8>> = (1..=5).map(_fibonacci).collect();
-    fib.unwrap()
+    (1..=5).map(_fibonacci).collect()
 }
 
-fn _fibonacci(count: usize) -> Option<u8> {
+fn _fibonacci(count: usize) -> u8 {
     match count {
-        0 => None,
-        1 | 2 => Some(1),
-        n => Some(_fibonacci(n - 2).unwrap() + _fibonacci(n - 1).unwrap()),
+        0 => 0,
+        1 | 2 => 1,
+        n => _fibonacci(n - 2) + _fibonacci(n - 1),
     }
 }

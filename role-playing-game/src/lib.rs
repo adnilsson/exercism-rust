@@ -10,10 +10,33 @@ pub struct Player {
 
 impl Player {
     pub fn revive(&self) -> Option<Player> {
-        unimplemented!("Revive this player")
+        if self.health > 0 {
+            return None; // Not dead
+        }
+
+        let mana = if self.level >= 10 { Some(100) } else { None };
+
+        Some(Player {
+            health: 100,
+            mana: mana,
+            level: self.level,
+        })
     }
 
     pub fn cast_spell(&mut self, mana_cost: u32) -> u32 {
-        unimplemented!("Cast a spell of cost {}", mana_cost)
+        match self.mana {
+            Some(mana) => {
+                if let Some(remaining_mana) = mana.checked_sub(mana_cost) {
+                    self.mana = Some(remaining_mana);
+                    mana_cost.saturating_mul(2)
+                } else {
+                    0
+                }
+            }
+            None => {
+                self.health = self.health.saturating_sub(mana_cost);
+                0
+            }
+        }
     }
 }

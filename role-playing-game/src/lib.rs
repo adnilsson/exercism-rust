@@ -25,14 +25,13 @@ impl Player {
 
     pub fn cast_spell(&mut self, mana_cost: u32) -> u32 {
         match self.mana {
-            Some(mana) => {
-                if let Some(remaining_mana) = mana.checked_sub(mana_cost) {
-                    self.mana = Some(remaining_mana);
+            Some(mana) => match mana.checked_sub(mana_cost) {
+                None => 0,
+                remaining_mana => {
+                    self.mana = remaining_mana;
                     mana_cost.saturating_mul(2)
-                } else {
-                    0
                 }
-            }
+            },
             None => {
                 self.health = self.health.saturating_sub(mana_cost);
                 0

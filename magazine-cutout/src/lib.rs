@@ -15,15 +15,12 @@ pub fn can_construct_note(magazine: &[&str], note: &[&str]) -> bool {
         return false;
     }
 
-    let cutouts = word_count(magazine);
-    let required_words = word_count(note);
-
-    for (note_word, note_count) in required_words {
-        match cutouts.get(note_word) {
+    let mut cutouts = word_count(magazine);
+    for word in note {
+        match cutouts.get_mut(word) {
+            Some(0) => return false,
             Some(cutout_count) => {
-                if *cutout_count < note_count {
-                    return false;
-                }
+                *cutout_count -= 1;
             }
             None => return false,
         }

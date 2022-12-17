@@ -18,36 +18,22 @@ impl CalculatorInput {
 }
 
 fn add(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    let operands = get_n_operands(2, stack);
-    let maybe_sum: Option<i32> = operands.into_iter().sum();
-
-    maybe_sum.map_or(None, |value| Some(CalculatorInput::Value(value)))
+    do_binary_op(|x, y| x + y, stack)
 }
 
 fn subtract(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    let operands = get_n_operands(2, stack);
-    // zip_with is still nightly, so do zip + map instead
-    operands[0]
-        .zip(operands[1])
-        .map(|(x, y)| CalculatorInput::Value(y - x))
+    do_binary_op(|x, y| x - y, stack)
 }
 
 fn multiply(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    let operands = get_n_operands(2, stack);
-    let maybe_prod: Option<i32> = operands.into_iter().product();
-
-    maybe_prod.map_or(None, |value| Some(CalculatorInput::Value(value)))
+    do_binary_op(|x, y| x * y, stack)
 }
 
 fn divide(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    let operands = get_n_operands(2, stack);
-    // zip_with is still nightly, so do zip + map instead
-    operands[0]
-        .zip(operands[1])
-        .map(|(x, y)| CalculatorInput::Value(y / x))
+    do_binary_op(|x, y| x / y, stack)
 }
 
-pub fn evaluate_one<'a>(
+pub fn evaluate_one(
     input: &CalculatorInput,
     stack: &mut Vec<CalculatorInput>,
 ) -> Option<CalculatorInput> {
@@ -60,12 +46,15 @@ pub fn evaluate_one<'a>(
     }
 }
 
-pub fn get_n_operands(n_operands: usize, stack: &mut Vec<CalculatorInput>) -> Vec<Option<i32>> {
-    let mut ops = Vec::with_capacity(n_operands);
-    for _ in 0..n_operands {
-        ops.push(stack.pop().map(|ci| ci.value()).flatten());
-    }
-    ops
+pub fn do_binary_op(
+    operation: fn(i32, i32) -> i32,
+    stack: &mut Vec<CalculatorInput>,
+) -> Option<CalculatorInput> {
+    let mut pop_operand = || stack.pop().map(|ci| ci.value()).flatten();
+    pop_operand()
+        .zip(pop_operand())
+        .map(|(op2, op1)| operation(op1, op2))
+        .map(|op_result| CalculatorInput::Value(op_result))
 }
 
 pub fn evaluate(inputs: &[CalculatorInput]) -> Option<i32> {
@@ -88,26 +77,5 @@ pub fn evaluate(inputs: &[CalculatorInput]) -> Option<i32> {
     match final_ci {
         Some(CalculatorInput::Value(val)) => Some(val),
         _ => None,
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_get_two_operands() {
-        let mut stack = vec![CalculatorInput::Value(1), CalculatorInput::Value(2)];
-        let ops = get_n_operands(2, &mut stack);
-        assert!(stack.is_empty());
-        assert_eq!(ops, vec![Some(2), Some(1)]);
-    }
-
-    #[test]
-    fn test_get_two_operands_with_operator() {
-        let mut stack = vec![CalculatorInput::Value(1), CalculatorInput::Add];
-        let ops = get_n_operands(2, &mut stack);
-        assert!(stack.is_empty());
-        assert_eq!(ops, vec![None, Some(1)]);
     }
 }

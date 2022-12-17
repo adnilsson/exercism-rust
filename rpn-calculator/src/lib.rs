@@ -1,3 +1,5 @@
+use std::ops::{Add, Div, Mul, Sub};
+
 #[derive(Debug)]
 pub enum CalculatorInput {
     Add,
@@ -23,10 +25,10 @@ pub fn evaluate_one(
 ) -> Option<CalculatorInput> {
     match input {
         &CalculatorInput::Value(val) => Some(CalculatorInput::Value(val)),
-        CalculatorInput::Add => do_binary_op(|x, y| x + y, stack),
-        CalculatorInput::Subtract => do_binary_op(|x, y| x - y, stack),
-        CalculatorInput::Multiply => do_binary_op(|x, y| x * y, stack),
-        CalculatorInput::Divide => do_binary_op(|x, y| x / y, stack),
+        CalculatorInput::Add => do_binary_op(i32::add, stack),
+        CalculatorInput::Subtract => do_binary_op(i32::sub, stack),
+        CalculatorInput::Multiply => do_binary_op(i32::mul, stack),
+        CalculatorInput::Divide => do_binary_op(i32::div, stack),
     }
 }
 

@@ -17,32 +17,16 @@ impl CalculatorInput {
     }
 }
 
-fn add(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    do_binary_op(|x, y| x + y, stack)
-}
-
-fn subtract(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    do_binary_op(|x, y| x - y, stack)
-}
-
-fn multiply(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    do_binary_op(|x, y| x * y, stack)
-}
-
-fn divide(stack: &mut Vec<CalculatorInput>) -> Option<CalculatorInput> {
-    do_binary_op(|x, y| x / y, stack)
-}
-
 pub fn evaluate_one(
     input: &CalculatorInput,
     stack: &mut Vec<CalculatorInput>,
 ) -> Option<CalculatorInput> {
     match input {
         &CalculatorInput::Value(val) => Some(CalculatorInput::Value(val)),
-        CalculatorInput::Add => add(stack),
-        CalculatorInput::Subtract => subtract(stack),
-        CalculatorInput::Multiply => multiply(stack),
-        CalculatorInput::Divide => divide(stack),
+        CalculatorInput::Add => do_binary_op(|x, y| x + y, stack),
+        CalculatorInput::Subtract => do_binary_op(|x, y| x - y, stack),
+        CalculatorInput::Multiply => do_binary_op(|x, y| x * y, stack),
+        CalculatorInput::Divide => do_binary_op(|x, y| x / y, stack),
     }
 }
 

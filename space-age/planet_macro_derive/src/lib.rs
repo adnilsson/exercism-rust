@@ -22,11 +22,6 @@ fn impl_planet_macro(ast: &syn::DeriveInput) -> TokenStream {
         .find(|&a| a.path().is_ident("orbital_period"))
         .expect("missing the 'orbital_period' attribute");
 
-    orbital_period_attr
-        .meta
-        .require_name_value()
-        .expect("'orbital_period' is not a NameValue attribute");
-
     let orbital_period_expr = &orbital_period_attr
         .meta
         .require_name_value()
@@ -38,9 +33,7 @@ fn impl_planet_macro(ast: &syn::DeriveInput) -> TokenStream {
 
     let gen = quote! {
         impl Planet for #name {
-            fn orbital_period_in_earth_years() -> f64 {
-                #orbital_period
-            }
+            const ORBITAL_PERIOD_IN_EARTH_YEARS: f64 = #orbital_period;
         }
     };
     gen.into()

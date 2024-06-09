@@ -14,12 +14,12 @@ impl From<u64> for Duration {
 
 pub trait Planet {
     const EARTH_YEAR_SECONDS: f64 = 31_557_600.0;
+    const ORBITAL_PERIOD_IN_EARTH_YEARS: f64;
+
     fn years_during(d: &Duration) -> f64 {
         let earth_years = d.seconds as f64 / Self::EARTH_YEAR_SECONDS;
-        earth_years / Self::orbital_period_in_earth_years()
+        earth_years / Self::ORBITAL_PERIOD_IN_EARTH_YEARS
     }
-
-    fn orbital_period_in_earth_years() -> f64;
 }
 
 #[derive(Planet)]

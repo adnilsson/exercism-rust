@@ -23,33 +23,33 @@ pub trait Planet {
 }
 
 #[derive(Planet)]
-#[orbital_period = 0.2408467]
+#[orbital_period(years = 0.2408467)]
 pub struct Mercury;
 
 #[derive(Planet)]
-#[orbital_period = 0.61519726]
+#[orbital_period(years = 0.61519726)]
 pub struct Venus;
 
 #[derive(Planet)]
-#[orbital_period = 1]
+#[orbital_period(years = 1)]
 pub struct Earth;
 
 #[derive(Planet)]
-#[orbital_period = 1.8808158]
+#[orbital_period(years = 1.8808158)]
 pub struct Mars;
 
 #[derive(Planet)]
-#[orbital_period = 11.862615]
+#[orbital_period(years = 11.862615)]
 pub struct Jupiter;
 
 #[derive(Planet)]
-#[orbital_period = 29.447498]
+#[orbital_period(years = 29.447498)]
 pub struct Saturn;
 
 #[derive(Planet)]
-#[orbital_period = 84.016846]
+#[orbital_period(years = 84.016846)]
 pub struct Uranus;
 
 #[derive(Planet)]
-#[orbital_period = 164.79132]
+#[orbital_period(years = 164.79132)]
 pub struct Neptune;

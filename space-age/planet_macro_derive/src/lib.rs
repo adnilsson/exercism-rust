@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{self, spanned::Spanned};
+use syn::{self};
 
 #[proc_macro_derive(Planet, attributes(orbital_period))]
 pub fn planet_macro_derive(input: TokenStream) -> TokenStream {
@@ -22,14 +22,19 @@ fn impl_planet_macro(ast: &syn::DeriveInput) -> TokenStream {
         .find(|&a| a.path().is_ident("orbital_period"))
         .expect("missing the 'orbital_period' attribute");
 
-    let orbital_period_expr = &orbital_period_attr
-        .meta
-        .require_name_value()
-        .expect("'orbital_period' is not a NameValue attribute")
-        .value;
+    let mut orbital_period: f64 = 0.0;
+    orbital_period_attr
+        .parse_nested_meta(|meta| {
+            if !meta.path.is_ident("years") {
+                return Err(meta.error("the only supported key is 'years'"));
+            }
+            let literal: syn::Lit = meta.value()?.parse()?;
 
-    // Try to convert the attribute value expression to a float
-    let orbital_period = expr_to_float(orbital_period_expr).unwrap();
+            // Try to convert the attribute value expression to a float
+            orbital_period = literal_to_float(&literal)?;
+            Ok(())
+        })
+        .expect("failed to parse the 'orbital_period' attribute");
 
     let gen = quote! {
         impl Planet for #name {
@@ -39,23 +44,13 @@ fn impl_planet_macro(ast: &syn::DeriveInput) -> TokenStream {
     gen.into()
 }
 
-fn expr_to_float(expr: &syn::Expr) -> Result<f64, syn::Error> {
-    let literal = match expr {
-        syn::Expr::Lit(l) => &l.lit,
-        default => {
-            return Err(syn::Error::new(
-                default.span(),
-                "expected a literal expression",
-            ))
-        }
-    };
-
+fn literal_to_float(literal: &syn::Lit) -> syn::Result<f64> {
     match literal {
         syn::Lit::Float(f) => f.base10_parse(),
         syn::Lit::Int(i) => i.base10_parse(),
-        default => Err(syn::Error::new(
-            default.span(),
-            "expected a numerical literal",
+        default => Err(syn::Error::new_spanned(
+            default,
+            "expected a numerical literal value",
         )),
     }
 }

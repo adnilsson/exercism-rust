@@ -15,13 +15,15 @@ pub fn sublist<T: PartialEq>(first_list: &[T], second_list: &[T]) -> Comparison 
     }
 }
 
+/// Returns true if candidate_sublist is a sublist of candidate_superlist.
+///
+/// Note that an empty list is considered to be a sublist of all lists:
+/// ```
+/// assert!(sublist::is_sublist(&[], &[1,2,3]))
+/// ```
 pub fn is_sublist<T: PartialEq>(candidate_sublist: &[T], candidate_superlist: &[T]) -> bool {
-    if candidate_sublist.len() == 0 {
-        // The empty list is a sublist of all lists.
-        // Also, .windows(size) panics if given size=0, so this must be handled explicitly.
-        return true;
-    }
-    candidate_superlist
-        .windows(candidate_sublist.len())
-        .any(|view| candidate_sublist == view)
+    candidate_sublist.is_empty() // windows(size) panics if given size=0, so this must be handled explicitly
+        || candidate_superlist
+            .windows(candidate_sublist.len())
+            .any(|view| candidate_sublist == view)
 }

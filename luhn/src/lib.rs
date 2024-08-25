@@ -1,8 +1,7 @@
 /// Check a Luhn checksum.
 pub fn is_valid(code: &str) -> bool {
-    let mut digits = match parse_input(code) {
-        Some(digits) => digits,
-        None => return false,
+    let Some(mut digits) = parse_input(code) else {
+        return false;
     };
 
     let multipliers = [1, 2].into_iter().cycle();
@@ -15,30 +14,19 @@ pub fn is_valid(code: &str) -> bool {
         .collect();
 
     let checksum: u32 = digits.iter().sum();
-    match checksum % 10 {
-        0 => true,
-        _ => false,
-    }
+    checksum % 10 == 0
 }
 
 fn parse_input(input: &str) -> Option<Vec<u32>> {
-    let filtered_input: Vec<_> = input
-        .chars()
-        .into_iter()
-        .filter(|c| !c.is_ascii_whitespace())
-        .collect();
+    let filtered_input: Vec<_> = input.chars().filter(|c| !c.is_ascii_whitespace()).collect();
 
     if filtered_input.len() < 2 {
         return None;
     }
 
-    let digits: Vec<_> = filtered_input
-        .into_iter()
-        .filter(|c| !c.is_ascii_whitespace())
-        .map(|c| c.to_digit(10))
-        .collect();
+    let digits: Vec<_> = filtered_input.into_iter().map(|c| c.to_digit(10)).collect();
 
-    if digits.iter().any(|d| d.is_none()) {
+    if digits.iter().any(Option::is_none) {
         return None;
     }
 
